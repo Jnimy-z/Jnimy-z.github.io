@@ -1,9 +1,10 @@
 <template>
   <div class="custom-border">
     <div class="custom-header">
-        <SvgIcon name="double-arrow"></SvgIcon>
-        <span>{{ title }}</span></div>
-    <slot name="custom-content"></slot>
+      <SvgIcon name="double-arrow"></SvgIcon>
+      <span>{{ title }}</span>
+    </div>
+    <slot name="content"></slot>
   </div>
 </template>
 
@@ -60,10 +61,10 @@ defineProps({
     letter-spacing: 0rem;
     color: #00f2f1;
     .svg-icon {
-        position: absolute;
-        left: 2.9rem;
-        top: 50%;
-        transform: translateY(-50%);
+      position: absolute;
+      left: 2.9rem;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
   .custom-content {

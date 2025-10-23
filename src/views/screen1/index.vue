@@ -9,7 +9,15 @@
       <div class="left-side side">
         <myBorder title="信息总量">
           <template #content>
-            <div class="data-content">hhhh</div>
+            <div class="data-content">
+              <BarChart
+                :data="barData"
+                :x-axis-data="xAxisData"
+                :config="barConfig"
+                height="300px"
+                @chart-click="handleBarClick"
+              ></BarChart>
+            </div>  
           </template>
         </myBorder>
       </div>
@@ -45,13 +53,33 @@
 
 <script>
 import myBorder from './components/myBorder.vue';
+import BarChart from '../../components/charts/BarChart.vue';
 export default {
   name: 'screen1',
-  data() {
-    return {};
-  },
   components: {
     myBorder,
+    BarChart,
+  },
+  data() {
+    return {
+      xAxisData: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      barData: [
+        {
+          name: '销量',
+          data: [120, 200, 150, 80, 70, 110, 130],
+        },
+      ],
+      barConfig: {
+        title: {
+          text: '销售数据',
+        },
+      },
+    };
+  },
+  methods: {
+    handleBarClick: (params) => {
+      console.log('柱状图点击:', params);
+    },
   },
 };
 </script>
