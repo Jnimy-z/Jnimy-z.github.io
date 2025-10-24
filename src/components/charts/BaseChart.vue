@@ -26,7 +26,7 @@ import {
   nextTick,
   computed,
 } from 'vue';
-import { loadFont, diagnoseFontIssue } from '../../utils/loadFont';
+// import { loadFont, diagnoseFontIssue } from '../../utils/loadFont';
 import echarts, { defaultTheme } from '@/utils/echarts';
 
 const props = defineProps({
@@ -106,10 +106,10 @@ const initChart = async () => {
       props.initOptions
     );
 
-    await loadFont();
+    // await loadFont();
 
-    // 运行诊断
-    diagnoseFontIssue();
+    // // 运行诊断
+    // diagnoseFontIssue();
 
     // 设置配置项
     chartInstance.value.setOption(props.option, true);
