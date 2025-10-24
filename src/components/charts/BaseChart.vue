@@ -17,7 +17,16 @@
 </template>
   
   <script setup>
-import { ref, shallowRef, onMounted, onUnmounted, watch, nextTick, computed } from 'vue';
+import {
+  ref,
+  shallowRef,
+  onMounted,
+  onUnmounted,
+  watch,
+  nextTick,
+  computed,
+} from 'vue';
+import { loadFont, diagnoseFontIssue } from '../../utils/loadFont';
 import echarts, { defaultTheme } from '@/utils/echarts';
 
 const props = defineProps({
@@ -33,7 +42,7 @@ const props = defineProps({
   },
   height: {
     type: [String, Number],
-    default: '400px',
+    default: '100%',
   },
   // 自定义类名
   className: {
@@ -96,6 +105,11 @@ const initChart = async () => {
       props.theme,
       props.initOptions
     );
+
+    await loadFont();
+
+    // 运行诊断
+    diagnoseFontIssue();
 
     // 设置配置项
     chartInstance.value.setOption(props.option, true);

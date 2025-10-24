@@ -4,7 +4,7 @@
       <SvgIcon name="double-arrow"></SvgIcon>
       <span>{{ title }}</span>
     </div>
-    <slot name="content"></slot>
+    <div class="custom-content"><slot name="content"></slot></div>
   </div>
 </template>
 
@@ -18,12 +18,14 @@ defineProps({
 </script>
 <style lang="less" scoped>
 .custom-border {
+  display: flex;
+  flex-flow: column;
   position: relative;
   width: 100%;
   height: 100%;
   border: 1px solid #0463ff;
   box-sizing: border-box;
-  background: #030e2c;
+  background: #000b1f;
   box-shadow: inset 0 0 81px 10px #042054;
   &::after {
     content: '';
@@ -54,7 +56,7 @@ defineProps({
     line-height: 6rem;
     text-align: left;
     text-indent: 6.9rem;
-    font-family: '35--Regular';
+    font-family: 'cus-regular-new';
     font-size: 2rem;
     font-weight: normal;
     font-stretch: normal;
@@ -68,6 +70,8 @@ defineProps({
     }
   }
   .custom-content {
+    flex: 1;
+    width: 100%;
   }
 }
 </style>>

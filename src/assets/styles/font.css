@@ -1,0 +1,11 @@
+@font-face {
+  font-family: "cus-regular-new";
+  /* src: url('@/assets/fonts/小可奶酪体.ttf'); */
+  src: url('@/assets/fonts/字制区喜脉体.ttf');
+  /* font-display: swap; */
+}
+
+@font-face {
+  font-family: 'testmyfont';
+  src: url('@/assets/fonts/小可奶酪体.ttf');
+}

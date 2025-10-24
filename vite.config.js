@@ -29,7 +29,7 @@ export default defineConfig({
             less: {
                 math: 'always',
                 modifyVars: {
-                    hack: `true; @import (reference) "${path.resolve('src/assets/styles/font.less')}";`,
+                    hack: `true; @import (reference) "${path.resolve('src/assets/styles/font.css')}";`,
                 },
                 globalVars: {
                     // 定义全局变量

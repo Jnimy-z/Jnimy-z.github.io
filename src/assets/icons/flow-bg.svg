@@ -1,0 +1,35 @@
+<svg id="组_3" data-name="组 3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="222.848" height="113.594" viewBox="0 0 222.848 113.594">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #0b1757;
+        fill-opacity: 0.24;
+        stroke: #4574d6;
+        stroke-linejoin: round;
+        stroke-width: 1px;
+        filter: url(#filter);
+      }
+
+      .cls-1, .cls-2 {
+        fill-rule: evenodd;
+      }
+
+      .cls-2 {
+        fill: #00fcf9;
+      }
+    </style>
+    <filter id="filter" x="848.062" y="156.156" width="221.848" height="112.594" filterUnits="userSpaceOnUse">
+      <feGaussianBlur result="blur" stdDeviation="5.385" in="SourceAlpha"/>
+      <feFlood result="flood" flood-color="#0646a7" flood-opacity="0.72"/>
+      <feComposite result="composite" operator="out" in2="blur"/>
+      <feOffset result="offset"/>
+      <feComposite result="composite-2" operator="in" in2="SourceAlpha"/>
+      <feBlend result="blend" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g transform="translate(-847.562 -155.656)" style="fill: #0b1757; filter: url(#filter)">
+    <path id="矩形_6_拷贝_13" data-name="矩形 6 拷贝 13" class="cls-1" d="M848.077,168.769l12.532-12.6H1057.42l12.5,12.7v87.293l-12.5,12.6H860.57l-12.493-12.607V168.769Z" style="stroke: inherit; filter: none; fill: inherit"/>
+  </g>
+  <use transform="translate(-847.562 -155.656)" xlink:href="#矩形_6_拷贝_13" style="stroke: #4574d6; filter: none; fill: none"/>
+  <path id="矩形_8_拷贝_14" data-name="矩形 8 拷贝 14" class="cls-2" d="M864.142,268.465v-2.272m193.038-.027,10.22-10.312h2.27l-12.49,12.6v-2.292ZM1067.38,249h2.28v6.906h-2.28V249Zm-17.01,17.166h6.81v2.292h-6.81v-2.292Zm6.81-107.707,10.22,10.328h2.27l-12.49-12.622v2.294Zm10.2,10.26h2.28v6.906h-2.28v-6.906Zm-17.01-10.26h6.81v-2.294h-6.81v2.294ZM860.57,266.166l-10.221-10.312h-2.272l12.493,12.6v-2.292ZM848.062,249h2.282v6.906h-2.282V249Zm22.729,17.166H860.57v2.292h10.221v-2.292ZM860.57,158.459l-10.221,10.328h-2.272l12.493-12.622v2.294Zm-12.508,10.26h2.282v6.906h-2.282v-6.906Zm19.322-10.26H860.57v-2.294h6.814v2.294Z" transform="translate(-847.562 -155.656)"/>
+</svg>
