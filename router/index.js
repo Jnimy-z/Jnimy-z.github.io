@@ -27,10 +27,15 @@ const routes = [
     {
         path: '/screens',
         children: [{
-            path: 'screen-1',
-            name: 'Screen1',
-            component: () => import('../src/views/screen1/index.vue'),
-            meta: { title: 'screen1', keepAlive: true }
+            path: 'screen-2',
+            name: 'Screen2',
+            component: () => import('../src/views/screen2/index.vue'),
+            meta: { title: 'screen2', keepAlive: true }
+        },{
+            path: 'screen-255',
+            name: 'Screen255',
+            component: () => import('../src/views/screen255/index.vue'),
+            meta: { title: 'screen255', keepAlive: true }
         }]
     }
 ]
