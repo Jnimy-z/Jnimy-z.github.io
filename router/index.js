@@ -52,6 +52,11 @@ const routes = [
             name: 'echartsMap',
             component: () => import('@/views/exampleShow/components/echartsMap.vue'),
             meta: { title: 'echartsMap', keepAlive: true }
+        },{
+            path: 'autoRollingList',
+            name: 'autoRollingList',
+            component: () => import('@/views/exampleShow/components/autoRollingList.vue'),
+            meta: { title: 'echartsMap', keepAlive: true }
         }]
     }
 ]

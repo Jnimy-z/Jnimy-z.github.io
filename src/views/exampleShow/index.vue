@@ -4,7 +4,6 @@
       <el-menu
         class="example-menu"
         router
-        default-active="/examples/openlayers"
       >
         <template v-for="(item, index) in menuRoutes" :key="'example' + index">
           <el-menu-item
@@ -36,6 +35,10 @@ export default {
           title: 'Echarts地图展示',
           path: '/examples/echartsMap'
         },
+        {
+          title: '自动滚动列表',
+          path: '/examples/autoRollingList'
+        }
       ],
     };
   },
@@ -62,7 +65,7 @@ export default {
   }
   .example-content {
     width: 100%;
-    height: 100%;
+    height: 100vh;
   }
 }
 </style>
