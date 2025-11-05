@@ -31,11 +31,27 @@ const routes = [
             name: 'Screen2',
             component: () => import('../src/views/screen2/index.vue'),
             meta: { title: 'screen2', keepAlive: true }
-        },{
+        }, {
             path: 'screen-255',
             name: 'Screen255',
             component: () => import('../src/views/screen255/index.vue'),
             meta: { title: 'screen255', keepAlive: true }
+        }]
+    },
+    {
+        path: '/examples',
+        name: 'examples',
+        component: () => import('../src/views/exampleShow/index.vue'),
+        children: [{
+            path: 'openlayers',
+            name: 'openlayers',
+            component: () => import('@/views/exampleShow/components/openlayers.vue'),
+            meta: { title: 'openlayers', keepAlive: true }
+        }, {
+            path: 'echartsMap',
+            name: 'echartsMap',
+            component: () => import('@/views/exampleShow/components/echartsMap.vue'),
+            meta: { title: 'echartsMap', keepAlive: true }
         }]
     }
 ]

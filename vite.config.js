@@ -2,6 +2,9 @@ import { defineConfig } from "vite";
 import vue from '@vitejs/plugin-vue'; // 引入插件
 import path from 'path'
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
+import AutoImport from 'unplugin-auto-import/vite';
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 export default defineConfig({
     base: '/',
@@ -20,7 +23,14 @@ export default defineConfig({
          * @default: __svg__icons__dom__
          */
         // customDomId: '__svg__icons__dom__',
-    })], // 将插件添加到 Vite 的 plugins 数组中
+    }),
+    AutoImport({
+        resolvers: [ElementPlusResolver()],
+    }),
+    Components({
+        resolvers: [ElementPlusResolver()],
+    })
+    ], // 将插件添加到 Vite 的 plugins 数组中
     build: {
         outDir: 'dist'
     },
