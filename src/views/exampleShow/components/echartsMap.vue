@@ -1,22 +1,23 @@
 <template>
   <div class="map-charts">
-    <CustomChart
+    <CustomChart_map
       :yAxisData="yAxisData"
       :xAxisData="xAxisData"
       :config="barConfig"
       :grid="barGrid"
       width="70%"
       height="70%"
-    ></CustomChart>
+      :geo="geoConfig"
+    ></CustomChart_map>
   </div>
 </template>
 <script>
-import CustomChart from '@/components/charts/CustomChart.vue';
+import CustomChart_map from '@/components/charts/CustomChart_map.vue';
 import { ref, onMounted, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 export default {
   components: {
-    CustomChart,
+    CustomChart_map,
   },
   data() {
     return {

@@ -65,6 +65,13 @@ const props = defineProps({
       },
     }),
   },
+  isMap: {
+    type: Boolean,
+    default: false
+  },
+  geo: {
+    type: [Object, Array]
+  }
 });
 
 const emit = defineEmits(['chart-click']);
