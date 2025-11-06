@@ -50,7 +50,9 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, './src')
+            '@': path.resolve(__dirname, './src'),
+            'jQuery': 'jquery/dist/jquery.min.js',
+            'window.jQuery': 'jquery/dist/jquery.min.js'
         }
     }
 })

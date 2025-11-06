@@ -52,16 +52,26 @@ const routes = [
             name: 'echartsMap',
             component: () => import('@/views/exampleShow/components/echartsMap.vue'),
             meta: { title: 'echartsMap', keepAlive: true }
-        },{
+        }, {
             path: 'autoRollingList',
             name: 'autoRollingList',
             component: () => import('@/views/exampleShow/components/autoRollingList.vue'),
-            meta: { title: 'echartsMap', keepAlive: true }
+            meta: { title: 'autoRollingList', keepAlive: true }
         }, {
             path: 'carousel',
             name: 'carousel',
             component: () => import('@/views/exampleShow/components/carousel.vue'),
-            meta: { title: 'echartsMap', keepAlive: true }
+            meta: { title: 'carousel', keepAlive: true }
+        }, {
+            path: 'myTree',
+            name: 'myTree',
+            component: () => import('@/views/exampleShow/components/myTree.vue'),
+            meta: { title: 'myTree', keepAlive: true }
+        }, {
+            path: 'wordCloud',
+            name: 'wordCloud',
+            component: () => import('@/views/exampleShow/components/wordCloud.vue'),
+            meta: { title: 'wordCloud', keepAlive: true }
         }]
     }
 ]

@@ -40,13 +40,19 @@ export default {
           title: '轮播图组件',
           path: '/examples/carousel',
         },
+        {
+          title: '树组件',
+          path: '/examples/myTree',
+        },
+        {
+          title: '词云组件',
+          path: '/examples/wordCloud',
+        },
       ],
     };
   },
   onMounted() {
-    console.log('hhhhh');
     this.$nextTick(() => {
-      console.log('hhhhh');
       console.log(this.$route.path);
     });
   },
