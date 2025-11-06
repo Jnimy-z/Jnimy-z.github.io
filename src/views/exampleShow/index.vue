@@ -1,10 +1,7 @@
 <template>
   <el-row class="examples">
     <el-col :span="3" class="example-col">
-      <el-menu
-        class="example-menu"
-        router
-      >
+      <el-menu class="example-menu" router>
         <template v-for="(item, index) in menuRoutes" :key="'example' + index">
           <el-menu-item
             :index="item.path"
@@ -29,28 +26,31 @@ export default {
       menuRoutes: [
         {
           title: 'OpenLayers展示',
-          path: '/examples/openlayers'
+          path: '/examples/openlayers',
         },
         {
           title: 'Echarts地图展示',
-          path: '/examples/echartsMap'
+          path: '/examples/echartsMap',
         },
         {
           title: '自动滚动列表',
-          path: '/examples/autoRollingList'
-        }
+          path: '/examples/autoRollingList',
+        },
+        {
+          title: '轮播图组件',
+          path: '/examples/carousel',
+        },
       ],
     };
   },
   onMounted() {
-        console.log('hhhhh')
+    console.log('hhhhh');
     this.$nextTick(() => {
-        console.log('hhhhh')
+      console.log('hhhhh');
       console.log(this.$route.path);
     });
   },
-  setup() {
-  },
+  setup() {},
 };
 </script>
 <style lang="less" scoped>
