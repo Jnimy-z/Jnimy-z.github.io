@@ -18,7 +18,7 @@ onMounted(() => {
 });
 onUnmounted(() => {
     if(timeout.value) {
-        clearInterval(timeout)
+        clearTimeout(timeout)
         timeout.value = null
     }
 })
@@ -32,11 +32,12 @@ function initData() {
   });
 }
 function carouselStart() {
-  if (timeout.value) return;
-  timeout.value = setInterval(() => {
+  if (timeout.value) {
     let firstItem = imageData.value.shift();
     imageData.value.push(firstItem);
-  }, time.value);
+    clearTimeout(timeout.value)
+  };
+  timeout.value = setTimeout(carouselStart, time.value);
 }
 </script>
   <style lang="less" scoped>
