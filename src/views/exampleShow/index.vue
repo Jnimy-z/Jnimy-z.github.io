@@ -48,6 +48,10 @@ export default {
           title: '词云组件',
           path: '/examples/wordCloud',
         },
+        {
+          title: '文件预览',
+          path: '/examples/pdfPreview'
+        }
       ],
     };
   },

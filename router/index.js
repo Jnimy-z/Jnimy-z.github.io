@@ -72,6 +72,11 @@ const routes = [
             name: 'wordCloud',
             component: () => import('@/views/exampleShow/components/wordCloud.vue'),
             meta: { title: 'wordCloud', keepAlive: true }
+        },{
+            path: 'pdfPreview',
+            name: 'pdfPreview',
+            component: () => import('@/views/exampleShow/components/pdfPreview.vue'),
+            meta: { title: 'pdfPreview', keepAlive: true }
         }]
     }
 ]
