@@ -1,175 +1,133 @@
 <template>
-    <div class="custom-word-cloud" :style="containerStyle">
-      <span
-        v-for="(word, index) in renderedWords"
-        :key="index"
-        :style="getWordStyle(word)"
-        @click="handleWordClick(word)"
-        class="word-item"
-      >
-        {{ word.text }}
-      </span>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    name: 'CustomWordCloud',
-    props: {
-      words: {
-        type: Array,
-        default: new Array(15).fill().map((item, index) => {
-            return {text: '词' + index, value: parseInt((Math.random() * 100), 10)}
-        }) // 格式: [{text: '词', value: 权重}]
-      },
-      width: {
-        type: String,
-        default: '500px'
-      },
-      height: {
-        type: String,
-        default: '400px'
-      },
-      minFontSize: {
-        type: Number,
-        default: 14
-      },
-      maxFontSize: {
-        type: Number,
-        default: 60
-      },
-      colorPalette: {
-        type: Array,
-        default: () => ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#C44569']
-      }
-    },
-    data() {
-      return {
-        renderedWords: []
-      };
-    },
-    computed: {
-      containerStyle() {
-        return {
-          width: this.width,
-          height: this.height,
-          position: 'relative',
-          overflow: 'hidden',
-          margin: '0 auto',
-          textAlign: 'center'
-        };
-      },
-      // 计算权重范围
-      valueRange() {
-        if (this.words.length === 0) return { min: 0, max: 1 };
-        
-        const values = this.words.map(word => word.value);
-        return {
-          min: Math.min(...values),
-          max: Math.max(...values)
-        };
-      }
-    },
-    mounted() {
-      this.generateWordCloud();
-    },
-    methods: {
-      generateWordCloud() {
-        if (this.words.length === 0) return;
-        
-        this.renderedWords = this.words.map(word => {
-          // 计算字体大小基于权重
-          const fontSize = this.calculateFontSize(word.value);
-          // 随机颜色
-          const color = this.getRandomColor();
-          // 随机位置（简单实现，实际需要碰撞检测）
-          const position = this.getRandomPosition(fontSize, word.text.length);
-          
-          return {
-            ...word,
-            fontSize,
-            color,
-            ...position
-          };
-        });
-      },
-      
-      calculateFontSize(value) {
-        const { min, max } = this.valueRange;
-        if (min === max) return this.maxFontSize;
-        
-        const ratio = (value - min) / (max - min);
-        return this.minFontSize + ratio * (this.maxFontSize - this.minFontSize);
-      },
-      
-      getRandomColor() {
-        return this.colorPalette[
-          Math.floor(Math.random() * this.colorPalette.length)
-        ];
-      },
-      
-      getRandomPosition(fontSize, textLength) {
-        // 简化的位置计算，实际项目需要更复杂的碰撞检测算法
-        const estimatedWidth = fontSize * textLength * 0.6;
-        const estimatedHeight = fontSize;
-        
-        return {
-          top: Math.random() * (parseInt(this.height) - estimatedHeight) + 'px',
-          left: Math.random() * (parseInt(this.width) - estimatedWidth) + 'px'
-        };
-      },
-      
-      getWordStyle(word) {
-        return {
-          fontSize: word.fontSize + 'px',
-          color: word.color,
-          position: 'absolute',
-          top: word.top,
-          left: word.left,
-          cursor: 'pointer',
-          fontWeight: 'bold',
-          padding: '2px 4px',
-          transform: `rotate(${Math.random() * 30 - 15}deg)`,
-          transition: 'all 0.3s ease',
-          opacity: 0.8
-        };
-      },
-      
-      handleWordClick(word) {
-        this.$emit('wordClick', word);
-        
-        // 添加点击效果
-        const wordElement = event.target;
-        wordElement.style.transform = 'scale(1.1) rotate(0deg)';
-        wordElement.style.opacity = '1';
-        
-        setTimeout(() => {
-          wordElement.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
-          wordElement.style.opacity = '0.8';
-        }, 300);
-      }
-    },
-    watch: {
-      words: {
-        handler() {
-          this.generateWordCloud();
-        },
-        deep: true
-      }
-    }
-  };
-  </script>
-  
-  <style scoped>
-  .custom-word-cloud {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  }
-  
-  .word-item:hover {
-    z-index: 10;
-    filter: brightness(1.2);
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  }
-  </style>
+  <div class="wordCloud" ref="wordCloud">
+  </div>
+</template>
+<script>
+export default {
+	name: 'word-cloud',
+	data () {
+		return {
+			hotWord: ['万事如意', '事事如意 ', '万事亨通', '一帆风顺', '万事大吉', '吉祥如意', '步步高升', '步步登高', '三羊开泰', '得心应手', '财源广进', '陶未媲美', '阖家安康', '龙马精神', '锦绣前程', '吉祥如意', '生龙活虎', '神采奕奕', '五谷丰登', '马到成功', '飞黄腾达', ' 步步高升', '福禄寿禧'],
+			color: [
+				'#a18cd1', '#fad0c4', '#ff8177',
+				'#fecfef', '#fda085', '#f5576c',
+				'#fe9a8b', '#30cfd0', '#38f9d7'
+			],
+			wordArr: [],
+			timer: null,
+			resetTime: 10,
+			ContainerSize: ''
+		};
+	},
+	mounted () {
+		this.init();
+	},
+	methods: {
+		init () {
+			this.dealSpan();
+			this.initWordPos();
+			this.render();
+		},
+		dealSpan () {
+			const wordArr = [];
+			this.hotWord.forEach((value) => {
+				// 根据词云数量生成span数量设置字体颜色和大小
+				const spanDom = document.createElement('span');
+				spanDom.style.position = 'relative';
+				spanDom.style.display = 'inline-block';
+				spanDom.style.color = this.randomColor();
+				spanDom.style.fontSize = this.randomNumber(15, 30) + 'px';
+				spanDom.innerHTML = value;
+				spanDom.local = {
+					position: {
+						// 位置
+						x: 0,
+						y: 0
+					},
+					direction: {
+						// 方向 正数往右 负数往左
+						x: 1,
+						y: 1
+					},
+					velocity: {
+						// 每次位移初速度
+						x: -0.5 + Math.random(),
+						y: -0.5 + Math.random()
+					},
+				};
+				this.$refs.wordCloud.appendChild(spanDom);
+				wordArr.push(spanDom);
+			});
+			this.wordArr = wordArr;
+		},
+		randomColor () {
+			// 获取随机颜色
+			var colorIndex = Math.floor(this.color.length * Math.random());
+			return this.color[colorIndex];
+		},
+		randomNumber (lowerInteger, upperInteger) {
+			// 获得一个包含最小值和最大值之间的随机数。
+			const choices = upperInteger - lowerInteger + 1;
+			return Math.floor(Math.random() * choices + lowerInteger);
+		},
+		render () {
+			if (this.resetTime < 100) {
+				this.resetTime = this.resetTime + 1;
+				this.timer = requestAnimationFrame(this.render.bind(this));
+				this.resetTime = 0;
+			}
+			this.wordFly();
+		},
+		wordFly () {
+			this.wordArr.forEach((value) => {
+				// 设置运动方向 大于边界或者小于边界的时候换方向
+				if (value.local.realPos.minx + value.local.position.x < this.ContainerSize.leftPos.x || value.local.realPos.maxx + value.local.position.x > this.ContainerSize.rightPos.x) value.local.direction.x = -value.local.direction.x;
+				if (value.local.realPos.miny + value.local.position.y < this.ContainerSize.leftPos.y || value.local.realPos.maxy + value.local.position.y > this.ContainerSize.rightPos.y) value.local.direction.y = -value.local.direction.y;
+				value.local.position.x += value.local.velocity.x * value.local.direction.x;
+				value.local.position.y += value.local.velocity.y * value.local.direction.y;
+				// 给每个词云加动画过渡
+				value.style.transform = 'translateX(' + value.local.position.x + 'px) translateY(' + value.local.position.y + 'px)';
+			});
+		},
+		initWordPos () {
+			// 计算每个词的真实位置和容器的位置
+			this.wordArr.forEach((value) => {
+				value.local.realPos = {
+					minx: value.offsetLeft,
+					maxx: value.offsetLeft + value.offsetWidth,
+					miny: value.offsetTop,
+					maxy: value.offsetTop + value.offsetHeight
+				};
+			});
+			this.ContainerSize = this.getContainerSize();
+		},
+		getContainerSize () {
+			// 判断容器大小控制词云位置
+			const el = this.$refs.wordCloud;
+			return {
+				leftPos: {
+					// 容器左侧的位置和顶部位置
+					x: el.offsetLeft,
+					y: el.offsetTop
+				},
+				rightPos: {
+					// 容器右侧的位置和底部位置
+					x: el.offsetLeft + el.offsetWidth,
+					y: el.offsetTop + el.offsetHeight
+				}
+			};
+		}
+	},
+	destroyed () {
+		// 组件销毁，关闭定时执行
+		cancelAnimationFrame(this.timer);
+	},
+};
+</script>
+<style lang="less" scoped>
+.wordCloud{
+   width:50%;
+   height:50%;
+   background: #0c1f47;
+}
+</style>
