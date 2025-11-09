@@ -51,6 +51,9 @@ export default {
         {
           title: '文件预览',
           path: '/examples/pdfPreview'
+        },{
+          title: '富文本编辑器',
+          path: '/examples/myEditor'
         }
       ],
     };

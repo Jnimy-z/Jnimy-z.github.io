@@ -77,6 +77,11 @@ const routes = [
             name: 'pdfPreview',
             component: () => import('@/views/exampleShow/components/pdfPreview.vue'),
             meta: { title: 'pdfPreview', keepAlive: true }
+        },{
+            path: 'myEditor',
+            name: 'myEditor',
+            component: () => import('@/views/exampleShow/components/myEditor.vue'),
+            meta: { title: 'myEditor', keepAlive: true }
         }]
     }
 ]
