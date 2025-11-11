@@ -9,14 +9,19 @@
     :auto-resize="autoResize"
     @chart-inited="handleChartInit"
     @chart-click="handleChartClick"
+    :geoData = "geoData"
   />
 </template>
   
   <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, defineExpose } from 'vue';
 import mapCharts from './mapCharts.vue';
 
+
 const props = defineProps({
+  geoData: {
+    type: Object
+  },
   grid: {
     type: Object,
     default: () => ({}),
@@ -75,6 +80,10 @@ const emit = defineEmits(['chart-click']);
 
 const chartRef = ref(null);
 
+const initChart =  function() {
+  chartRef.value.initChart()
+}
+
 // 合并配置
 const mergedOption = computed(() => {
   const baseOption = {
@@ -101,9 +110,12 @@ const handleChartClick = (params) => {
   emit('chart-click', params);
 };
 
+
+
 // 暴露方法给父组件
 defineExpose({
   getInstance: () => chartRef.value?.chartInstance,
   resize: () => chartRef.value?.handleResize(),
+  initChart
 });
 </script>

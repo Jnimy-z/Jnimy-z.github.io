@@ -25,13 +25,15 @@ import {
   watch,
   nextTick,
   computed,
+  defineExpose,
 } from 'vue';
 // import { loadFont, diagnoseFontIssue } from '../../utils/loadFont';
 import echarts, { defaultTheme } from '@/utils/echarts';
-import request from '@/utils/request.js';
-const geoJson = request.get('/jsondata/sichuan.json').data;
 
 const props = defineProps({
+  geoData: {
+    type: Object
+  },
   // 图表配置
   option: {
     type: Object,
@@ -78,6 +80,10 @@ const props = defineProps({
   geo: {
     type: [Object, Array],
   },
+  cityName: {
+    type: String,
+    default: '四川',
+  },
 });
 
 const emit = defineEmits(['chart-inited', 'chart-click', 'chart-error']);
@@ -85,6 +91,8 @@ const emit = defineEmits(['chart-inited', 'chart-click', 'chart-error']);
 const chartContainer = ref(null);
 const chartInstance = shallowRef(null);
 const error = ref(null);
+
+const dataList = ref([]);
 
 // 处理容器尺寸
 const containerWidth = computed(() =>
@@ -96,6 +104,7 @@ const containerHeight = computed(() =>
 
 const extendsMap = function (id, opt) {
   var curGeoJson = {};
+
   var cityMap = {
     南昌市: nanchang,
     景德镇市: jingdezhen,
@@ -414,86 +423,6 @@ const extendsMap = function (id, opt) {
         ],
       },
     ],
-    geo: {
-      map: opt.mapName,
-      // roam: true,
-      zoom: 1,
-      label: {
-        normal: {
-          show: true,
-          textStyle: {
-            color: '#fff',
-          },
-        },
-        emphasis: {
-          textStyle: {
-            color: '#fff',
-          },
-        },
-      },
-      itemStyle: {
-        normal: {
-          borderColor: 'rgba(147, 235, 248, 1)',
-          borderWidth: 1,
-          areaColor: {
-            type: 'radial',
-            x: 0.5,
-            y: 0.5,
-            r: 0.8,
-            colorStops: [
-              {
-                offset: 0,
-                color: 'rgba(147, 235, 248, 0)', // 0% 处的颜色
-              },
-              {
-                offset: 1,
-                color: 'rgba(147, 235, 248, .2)', // 100% 处的颜色
-              },
-            ],
-            globalCoord: false, // 缺省为 false
-          },
-          shadowColor: 'rgba(128, 217, 248, 1)',
-          // shadowColor: 'rgba(255, 255, 255, 1)',
-          shadowOffsetX: -2,
-          shadowOffsetY: 2,
-          shadowBlur: 10,
-        },
-        emphasis: {
-          areaColor: '#389BB7',
-          borderWidth: 0,
-        },
-      },
-      regions: opt.activeArea.map(function (item) {
-        if (typeof item !== 'string') {
-          return {
-            name: item.name,
-            itemStyle: {
-              normal: {
-                areaColor: item.areaColor || '#389BB7',
-              },
-            },
-            label: {
-              normal: {
-                show: item.showLabel,
-                textStyle: {
-                  color: '#fff',
-                },
-              },
-            },
-          };
-        } else {
-          return {
-            name: item,
-            itemStyle: {
-              normal: {
-                borderColor: '#91e6ff',
-                areaColor: '#389BB7',
-              },
-            },
-          };
-        }
-      }),
-    },
     series: [
       {
         type: 'effectScatter',
@@ -566,7 +495,7 @@ const initChart = async () => {
       chartInstance.value.dispose();
     }
 
-    echarts.registerMap('四川', geoJson);
+    echarts.registerMap(props.cityName, props.geoData);
 
     // 创建新实例
     chartInstance.value = echarts.init(
@@ -616,21 +545,24 @@ const handleResize = () => {
     chartInstance.value.resize();
   }
 };
+defineExpose({
+  initChart,
+});
 
 // 监听窗口变化
 let resizeObserver = null;
 onMounted(() => {
   nextTick(() => {
-    initChart();
+    // initChart();
 
-    // 使用 ResizeObserver 监听容器尺寸变化
-    if (props.autoResize && 'ResizeObserver' in window) {
-      resizeObserver = new ResizeObserver(handleResize);
-      resizeObserver.observe(chartContainer.value);
-    } else {
-      // 降级方案：监听窗口变化
-      window.addEventListener('resize', handleResize);
-    }
+    // // 使用 ResizeObserver 监听容器尺寸变化
+    // if (props.autoResize && 'ResizeObserver' in window) {
+    //   resizeObserver = new ResizeObserver(handleResize);
+    //   resizeObserver.observe(chartContainer.value);
+    // } else {
+    //   // 降级方案：监听窗口变化
+    //   window.addEventListener('resize', handleResize);
+    // }
   });
 });
 
@@ -648,15 +580,15 @@ onUnmounted(() => {
 });
 
 // 监听配置变化
-watch(() => props.option, updateChart, { deep: true });
-watch(
-  () => props.loading,
-  (newVal) => {
-    if (!newVal && chartInstance.value) {
-      handleResize();
-    }
-  }
-);
+// watch(() => props.option, updateChart, { deep: true });
+// watch(
+//   () => props.loading,
+//   (newVal) => {
+//     if (!newVal && chartInstance.value) {
+//       handleResize();
+//     }
+//   }
+// );
 </script>
     
     <style scoped>

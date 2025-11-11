@@ -1,157 +1,224 @@
 <template>
-  <div class="map-charts">
-    <CustomChart_map
-      :yAxisData="yAxisData"
-      :xAxisData="xAxisData"
-      :config="barConfig"
-      :grid="barGrid"
-      width="70%"
-      height="70%"
-      :geo="geoConfig"
-    ></CustomChart_map>
+  <div class="cheartsMap" v-loading="loading">
+    <div id="cheartsMap_main" class="cheartsMap_main" />
+    <!-- <el-button @click="goBack" type="primary" class="cheartsMap_btn" v-if="mapCode !== '130000'" size="mini">返回
+    </el-button> -->
   </div>
 </template>
-<script>
-import CustomChart_map from '@/components/charts/CustomChart_map.vue';
-import { ref, onMounted, nextTick } from 'vue';
-import { useRouter } from 'vue-router';
-export default {
-  components: {
-    CustomChart_map,
-  },
-  data() {
-    return {
-      yAxisData: {
-        type: 'value',
-        max: this.maxCount,
-        splitLine: {
-          show: true,
-          lineStyle: {
-            color: '#1d2b4a',
-            width: 2,
-          },
-        },
-        axisTick: {
-          show: false,
-        },
-        axisLabel: {
-          show: true,
-          color: '#00d9fb',
-          fontSize: 18,
-          fontFamily: 'cus-regular-new',
-          margin: 8,
-        },
-        axisLine: {
-          show: false,
-        },
-      },
-      maxCount: 80,
-      barGrid: {
-        top: '31px',
-        left: '43px',
-        right: '63px',
-        bottom: '20px',
-        containLabel: true,
-      },
-      barData: new Array(5).fill({
-        name: '流量',
-        value: 25,
-      }),
-    };
-  },
-  computed: {
-    xAxisData() {
-      return [
-        {
-          type: 'category',
-          data: this.barData.map((item) => ({
-            value: item.name,
-            textStyle: {
-              align: 'center',
-              color: '#00f2f1',
-              fontSize: 18,
-              fontFamily: 'cus-regular-new',
-            },
-          })),
-          axisLine: {
-            show: true,
-          },
-          axisTick: {
-            show: false,
-          },
-          axisLabel: {
-            show: true,
-            inside: false,
-            align: 'center',
-            margin: 12,
-            lineStyle: {
-              color: '#6076ad',
-              width: 2,
-            },
-          },
-        },
-      ];
+
+<script setup>
+import echarts from '@/utils/echarts';
+// import moment from "moment";
+import request from '@/utils/request.js';
+import {ref, onMounted, shallowRef} from 'vue'
+// props: {
+//   searchFromBottom: {
+//     type: Object
+//   }
+// },
+
+const mapArea = ref('province');
+const cityName = ref('四川');
+const mapCode = ref('130000');
+const loading = ref(false);
+const searchForm = ref({
+  startTime: '',
+  endTime: '',
+  type: '1',
+});
+const cityMap = ref({
+  唐山市: '130200',
+  秦皇岛市: '130300',
+  邯郸市: '130400',
+  邢台市: '130500',
+  保定市: '130600',
+  张家口市: '130700',
+  承德市: '130800',
+  沧州市: '130900',
+  廊坊市: '131000',
+  衡水市: '131100',
+});
+const cityDataList = ref([]); //所有城市数据列表
+const countiesDataList = ref([]); // 所有县区数据列表
+const MyChart = shallowRef(null)
+
+onMounted(() => {
+  init()
+});
+
+//初始化
+const init = async function () {
+  MyChart.value = echarts.init(document.getElementById('cheartsMap_main'));
+  const option = {
+    title: {
+      text: '申请地域分布',
+      top: 10,
+      left: 20,
     },
-    barConfig() {
-      return {
-        series: [
-          {
-            type: 'bar',
-            data: this.barData,
-            itemStyle: {
-              color: {
-                type: 'linear',
-                x: 0,
-                y: 0,
-                x2: 0,
-                y2: 1,
-                colorStops: [
-                  {
-                    offset: 0,
-                    color: '#67e0e3',
-                  },
-                  {
-                    offset: 1,
-                    color: '#0282de',
-                  },
-                ],
-              },
-            },
-            barWidth: '28%',
-            barMaxWidth: '45',
-            label: {
-              show: true,
-              color: '#00d9fb',
-              fontSize: 18,
-              fontFamily: 'cus-regular-new',
-              position: 'top',
-              distance: 14,
-            },
-            z: 1,
-          },
-        ],
-      };
-    },
-  },
-  setup() {
-    onMounted(() => {
+    series: [
       {
-        let router = useRouter();
-        nextTick(() => {
-          console.log(router.currentRoute.value);
-        });
-      }
+        type: 'map',
+        geoIndex: 0,
+        data: [], // 添加图表显示的数据
+      },
+    ],
+    geo: {
+      type: 'map',
+      map: '河北省',
+      label: {
+        normal: {
+          show: true,
+          color: '#fff',
+        },
+        emphasis: {
+          show: true,
+          color: '#fff',
+        },
+      },
+      zoom: 1.1, // 当前视角的缩放比例
+      roam: false, // 是否开启拖拽或缩放
+      scaleLimit: {
+        // 滚轮缩放的极限控制
+        min: 1,
+        max: 2.5,
+      },
+      itemStyle: {
+        normal: {
+          areaColor: '#00136A',
+          borderColor: '#00f0fa',
+          borderWidth: 1, //设置外层边框
+          shadowBlur: 5,
+          shadowOffsetY: 8,
+          shadowOffsetX: 0,
+          shadowColor: '#01012a',
+        },
+        emphasis: {
+          areaColor: '#F9C723',
+          shadowOffsetX: 0,
+          shadowOffsetY: 0,
+          shadowBlur: 5,
+          borderWidth: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)',
+        },
+      },
+    },
+    tooltip: {
+      appendToBody: true,
+      trigger: 'item', // 触发条件
+      confine: true,
+      alwaysShowContent: false,
+      backgroundColor: 'RGBA(136, 123, 135, 0.8)',
+      formatter: function (params) {
+        //点击进入下级城市的点击事件可以写在这个div里
+        return (
+          `<div class='pop-up'>
+                          <p style="margin:0;">地区：` +
+          params.name +
+          `</p>
+                          <p style="margin:0;">申请数量：` +
+          params.data.count +
+          `次</p>
+                     </div>`
+        );
+      },
+      textStyle: {
+        color: '#ffffff',
+      },
+    },
+  };
+  // 获取矢量地图数据
+  let data = await getJson();
+  loading.value = false;
+  if (data.status === 200) {
+    let dataList = [];
+    data.data.features.map((item) => {
+      let params = {
+        name: item.properties.name,
+        adcode: item.properties.adcode,
+      };
+      dataList.push(params);
     });
-  },
+    echarts.registerMap(cityName.value, data.data);
+    option.geo.map = cityName.value;
+    option.series[0].data = dataList;
+    MyChart.value.clear();
+    MyChart.value.setOption(option);
+    window.addEventListener('resize', function () {
+      MyChart.value.resize();
+    });
+    MyChart.value.on('click', async (params) => {
+      //地图下钻
+      // if (cityMap.value[params.name]) {
+        mapArea.value = 'city';
+        cityName.value = params.name;
+        // mapCode.value = cityMap.value[params.name];
+        // 获取矢量地图数据
+        let data = await getJson('chengdu');
+        loading.value = false;
+        if (data.status === 200) {
+          let dataList = [];
+          data.data.features.map((item) => {
+            let params = {
+              name: item.properties.name,
+              adcode: item.properties.adcode,
+            };
+            dataList.push(params);
+          });
+          echarts.registerMap(cityName.value, data.data);
+          option.geo.map = cityName.value;
+          option.series[0].data = dataList;
+          MyChart.value.setOption(option);
+          window.addEventListener('resize', function () {
+            MyChart.value.resize();
+          });
+        }
+      // }
+    });
+  }
 };
+
+// 返回上一级地图
+const goBack = function () {
+  mapArea.value = 'province';
+  cityName.value = '四川省';
+  mapCode.value = '510000';
+  init();
+};
+// 获取地图JSON
+const getJson = function (name) {
+  loading.value = true;
+  let code = name || 'sichuan';
+  return request.get(`/jsondata/${code}.json`);
+};
+
+// watch: {
+//   searchFromBottom: {
+//     handler(newVal) {
+//       console.log(newVal, 'watch')
+//     },
+//     immediate: true,
+//     deep: true
+//   }
+// }
 </script>
 
-<style lang="less" scoped>
-.map-charts {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+<style scoped lang="less">
+.cheartsMap {
   width: 100%;
   height: 100%;
+  position: relative;
+
+  .cheartsMap_main {
+    width: 100%;
+    height: 100%;
+  }
+
+  .cheartsMap_btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    line-height: 16px;
+  }
 }
 </style>
+
