@@ -8,10 +8,14 @@ const request = axios.create({
 // 请求拦截
 request.interceptors.request.use(
     (config) => {
+        Object.assign(config.headers, {
+            'Content-Type': 'application/json'
+        })
         const token = localStorage.getItem('token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+        debugger
         return config
     },
     (error) => {

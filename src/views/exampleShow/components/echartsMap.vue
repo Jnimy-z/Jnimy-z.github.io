@@ -9,8 +9,10 @@
 <script setup>
 import echarts from '@/utils/echarts';
 // import moment from "moment";
-import request from '@/utils/request.js';
-import {ref, onMounted, shallowRef} from 'vue'
+// import request from '@/utils/request.js';
+// import axios from 'axios';
+import { ref, onMounted, shallowRef } from 'vue';
+import axios from 'axios';
 // props: {
 //   searchFromBottom: {
 //     type: Object
@@ -40,10 +42,10 @@ const cityMap = ref({
 });
 const cityDataList = ref([]); //所有城市数据列表
 const countiesDataList = ref([]); // 所有县区数据列表
-const MyChart = shallowRef(null)
+const MyChart = shallowRef(null);
 
 onMounted(() => {
-  init()
+  init();
 });
 
 //初始化
@@ -64,7 +66,17 @@ const init = async function () {
     ],
     geo: {
       type: 'map',
-      map: '河北省',
+      map: '四川省',
+      id: 'map',
+      universalTransition: {
+        enabled: true,
+        divideShape: 'clone', // 关键：启用形状分割动画
+        delay: 1000,
+      },
+      animationDuration: 800,
+      animationEasing: 'cubicOut',
+      animationDurationUpdate: 800,
+      animationEasingUpdate: 'cubicOut',
       label: {
         normal: {
           show: true,
@@ -75,13 +87,14 @@ const init = async function () {
           color: '#fff',
         },
       },
-      zoom: 1.1, // 当前视角的缩放比例
+      zoom: 1, // 当前视角的缩放比例
       roam: false, // 是否开启拖拽或缩放
       scaleLimit: {
         // 滚轮缩放的极限控制
         min: 1,
         max: 2.5,
       },
+      center: [103.82, 30.59],
       itemStyle: {
         normal: {
           areaColor: '#00136A',
@@ -141,14 +154,21 @@ const init = async function () {
     echarts.registerMap(cityName.value, data.data);
     option.geo.map = cityName.value;
     option.series[0].data = dataList;
-    MyChart.value.clear();
+    // MyChart.value.clear();
     MyChart.value.setOption(option);
     window.addEventListener('resize', function () {
       MyChart.value.resize();
     });
     MyChart.value.on('click', async (params) => {
-      //地图下钻
-      // if (cityMap.value[params.name]) {
+      option.geo.center = [104.06, 30.67]; // 成都中心经纬度
+      // option.geo.zoom = 1; // 成都缩放比例
+      option.series[0].data = dataList;
+      option.geo.zoom = 4;
+      MyChart.value.setOption(option, false);
+
+      setTimeout(async () => {
+        //地图下钻
+        // if (cityMap.value[params.name]) {
         mapArea.value = 'city';
         cityName.value = params.name;
         // mapCode.value = cityMap.value[params.name];
@@ -166,13 +186,16 @@ const init = async function () {
           });
           echarts.registerMap(cityName.value, data.data);
           option.geo.map = cityName.value;
+          option.geo.center = [104.06, 30.67]; // 成都中心经纬度
+          option.geo.zoom = 1; // 成都缩放比例
           option.series[0].data = dataList;
-          MyChart.value.setOption(option);
+          MyChart.value.setOption(option, false);
           window.addEventListener('resize', function () {
             MyChart.value.resize();
           });
         }
-      // }
+        // }
+      }, 1000);
     });
   }
 };
@@ -188,7 +211,7 @@ const goBack = function () {
 const getJson = function (name) {
   loading.value = true;
   let code = name || 'sichuan';
-  return request.get(`/jsondata/${code}.json`);
+  return axios.get(`/jsondata/${code}.json`);
 };
 
 // watch: {
